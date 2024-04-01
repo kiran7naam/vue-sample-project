@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 const { MongoClient } = require('mongodb');
 
 async function start(){
@@ -11,8 +12,9 @@ async function start(){
         const app = express();
         app.use(express.json());
 
+        app.use('/images', express.static(path.join(__dirname, '../assets')));
 
-        app.get('/products', async(req,res) => {
+        app.get('/api/products', async(req,res) => {
             const products = await db.collection('products').find({}).toArray();
             res.send(products);
         })
@@ -22,18 +24,18 @@ async function start(){
 
         }
 
-        app.get('/users/:userId/cart', async(req,res) => {
+        app.get('/api/users/:userId/cart', async(req,res) => {
             const user = await db.collection('users').findOne({id : req.params.userId});
             const populatedCart = await populateCartIds(user.cartItems)
             res.json(populatedCart)
         })
-        app.get('/products/:productId', async(req,res) => {
+        app.get('/api/products/:productId', async(req,res) => {
             const productId = req.params.productId;    
             const product = await db.collection('products').findOne({ id : productId });
             res.json(product);
         })
 
-        app.post('/users/:userId/cart', async(req,res) => {
+        app.post('/api/users/:userId/cart', async(req,res) => {
             const userId = req.params.userId;
             const productId = req.body.id;
             await db.collection('users').updateOne({id : userId},{
@@ -44,7 +46,7 @@ async function start(){
             res.json(populatedCart)
         })
 
-        app.delete('/users/:userId/cart/:productId', async(req,res) => {
+        app.delete('/api/users/:userId/cart/:productId', async(req,res) => {
             const userId = req.params.userId;
             const productId = req.params.productId;
             await db.collection('users').updateOne({id : userId},{

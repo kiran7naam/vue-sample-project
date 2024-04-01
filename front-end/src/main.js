@@ -9,20 +9,22 @@ import NotFoundPage from './pages/NotFoundPage.vue';
 
 createApp(App)
 .use(VueRouter.createRouter({
-    history : VueRouter.createWebHistory(process.env.BASE_URL),
-    routes : [{
-        path : '/cart/',
-        component : ShoppingCartPage,
+    history: VueRouter.createWebHistory(process.env.BASE_URL),
+    routes: [{
+      path: '/cart',
+      component: ShoppingCartPage,
+    }, {
+      path: '/products',
+      component: ProductsPage,
+    }, {
+      path: '/products/:productId',
+      component: ProductDetailPage,
     },{
-        path : '/products/',
-        component : ProductsPage,
-    },{
-        path : '/products/:productId/',
-        component : ProductDetailPage,
-    },{
-        path : '/:pathMatch(.*)*',
-        component : NotFoundPage,
-    }
-]
-}))
-.mount('#app')
+      path : '/',
+      redirect : '/products'
+    }, {
+      path: '/:pathMatch(.*)*',
+      component: NotFoundPage,
+    }]
+  }))
+  .mount('#app')
